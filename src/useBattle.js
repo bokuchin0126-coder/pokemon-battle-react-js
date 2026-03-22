@@ -1,14 +1,22 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export function useBattle() {
   const [player, setPlayer] = useState({
-    attack: 10,
-    hp: 100
+    attack: 20,
+    hp: 600,
+    maxHp: 600
   })
 
   const [enemy, setEnemy] = useState(null)
 
   const [logs, setLogs] = useState([])
+
+  const [turn, setTurn] = useState(1)
+
+  const [isProcessing, setIsProcessing] = useState(false)
+  const isProcessingRef = useRef(false)
+
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
   async function fetchPokemon() {
     const id = Math.floor(Math.random() * 151) + 1
@@ -17,48 +25,25 @@ export function useBattle() {
 
     const hpStat = data.stats.find(s => s.stat.name === "hp")
     const attackStat = data.stats.find(s => s.stat.name === "attack")
-    console.log(data.sprites.front_dafault)
 
     setEnemy({
         name: data.name,
-        attack: Math.floor(attackStat.base_stat / 2),
+        attack: Math.floor(attackStat.base_stat / 5),
         hp: hpStat.base_stat,
+        maxHp: hpStat.base_stat,
         image: data.sprites.other["official-artwork"].front_default
     })
 
     setLogs(prev => [
-        `A wild ${data.name} appeared!`,
-        ...prev
+      ...prev,
+      {
+        text: `[ターン${turn}] A wild ${data.name} appeared!`,
+        type: "enemy"
+      }
     ])
   }
 
-  function attack() {
-    if (!enemy) return
-
-    const enemyDamage = Math.floor(Math.random() * 10) + enemy.attack
-    const nextEnemyHp = enemy.hp - player.attack
-    const nextPlayerHp = player.hp - enemyDamage
-
-    setEnemy({
-      ...enemy,
-      hp: nextEnemyHp
-    })
-    
-    if (nextEnemyHp > 0) { 
-      setPlayer({
-        ...player,
-        hp: nextPlayerHp
-      })
-    }
-
-    setLogs(prev => [
-      `Player attack! ${player.attack}`,
-      `Enemy attack! ${enemyDamage}`,
-      ...prev
-    ])
-  }
-
-  function spawnEnemy() {
+  async function spawnEnemy() {
     fetchPokemon()
   }
 
@@ -66,19 +51,80 @@ export function useBattle() {
     spawnEnemy()
   }, [])
 
-  useEffect(() => {
-    if (!enemy) return
+  async function playerAttack() {
+    const nextEnemyHp = Math.max(0, enemy.hp - player.attack)
 
-    if (enemy.hp === 0) {
-      spawnEnemy()
+    setEnemy({
+      ...enemy,
+      hp: nextEnemyHp
+    })
+  
+    setLogs(prev => [
+      ...prev,
+      {
+        text: `[ターン${turn}] Player attack! ${player.attack}`,
+        type: "player"
+      }
+    ])
+
+    return nextEnemyHp
+  }
+
+  async function enemyAttack() {
+    const enemyDamage = Math.floor(Math.random() * 10) + enemy.attack
+    const nextPlayerHp = Math.max(0, player.hp - enemyDamage)
+
+    if (player.hp > 0) { 
+      setPlayer({
+        ...player,
+        hp: nextPlayerHp
+      })
     }
-  }, [enemy])
+
+    setLogs(prev => [
+      ...prev,
+      {
+        text: `[ターン${turn}] Enemy attack! ${enemyDamage}`,
+        type: "enemy"
+      }
+    ])
+  }
+
+  async function turnFlow() {
+    if (!enemy) return
+    if (isProcessingRef.current) return
+    
+    isProcessingRef.current = true
+    setIsProcessing(true)
+    
+    try {
+      const nextEnemyHp = await playerAttack()
+    
+      if (nextEnemyHp <= 0) {
+        setTurn(prev => prev + 1)
+
+        await wait(300)
+        await spawnEnemy()
+        isProcessingRef.current = false
+        setIsProcessing(false)
+        return
+      }
+  
+      await wait(200)
+      await enemyAttack()
+
+  } finally {
+      isProcessingRef.current = false
+      setIsProcessing(false)
+    }
+  }
 
   return {
     player,
     enemy,
     logs,
-    attack
+    isProcessing,
+    turnFlow
   }
 
 }

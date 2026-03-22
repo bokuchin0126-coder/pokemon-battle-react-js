@@ -16,3 +16,60 @@
 .enemy p {
   font-weight: bold;
 }
+
+.hp-bar {
+  position: relative;
+  width: 200px;
+  height: 20px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px auto;
+}
+
+.hp-bar.hit {
+  animation: shake 0.2s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+.hp-fill {
+  height: 100%;
+  background: limegreen;
+  transition: width 0.3s ease;
+}
+
+.hp-damage {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.6);
+  animation: damageFade 0.3s ease;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes damageFade {
+  0% { opacity: 1; }
+  100% { opacity: 0;}
+}
+
+.log-box {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.player {
+  color: blue;
+}
+
+.enemy {
+  color: red;
+}

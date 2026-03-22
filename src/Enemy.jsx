@@ -1,5 +1,47 @@
+import { useState, useEffect, useRef } from "react"
 function Enemy({ enemy }) {
   if (!enemy) return null
+  const hpPercent = (enemy.hp / enemy.maxHp) * 100
+  const hpColor = hpPercent <= 20 ? "red" : hpPercent <= 50 ? "orange" : "green"
+  const [isHit, setIsHit] = useState(false)
+  const [damagePercent, setDamagePercent] = useState(0)
+  const prevHpRef = useRef(enemy.hp)
+
+  useEffect(() => {
+    if (!enemy) return
+
+    const prevHp = prevHpRef.current
+
+    if (enemy.hp < prevHp) {
+      const diff = prevHp - enemy.hp
+      const percent = (diff / enemy.maxHp) * 100
+
+      setDamagePercent(percent)
+
+      setTimeout(() => {
+        setDamagePercent(0)
+      }, 300)
+    }
+
+    prevHpRef.current = enemy.hp
+  }, [enemy.hp])
+
+  useEffect(() => {
+    if (!enemy) return
+    const prevHp = prevHpRef.current
+    
+    if (enemy.hp < prevHp) {
+    setIsHit(true)
+
+    const timer = setTimeout(() => {
+      setIsHit(false)
+    }, 200)
+
+    return () => clearTimeout(timer)
+    }
+    return
+  }, [enemy.hp])
+
 
   return (
     <>
@@ -8,7 +50,13 @@ function Enemy({ enemy }) {
       <img src={enemy.image} alt={enemy.name} />
     )}
     </div>
-    <h3>{enemy.name} HP: {Math.max(0, enemy.hp)}</h3>
+    <div className={`hp-bar ${isHit ? "hit" : ""}`}>
+      <div className="hp-fill" style={{ width: `${hpPercent}%` , backgroundColor: hpColor}} />
+      {damagePercent > 0 && (
+        <div className="hp-damage" style={{ width: `${damagePercent}%`, left: `${hpPercent}%`}} />
+      )}
+    </div>
+    <h3>{enemy.name} HP: {enemy.hp}</h3>
     </>
   )
 }
