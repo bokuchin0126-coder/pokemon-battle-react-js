@@ -5,7 +5,7 @@ import Player from "./Player"
 import './App.css'
 
 function App() {
-  const { player, enemy, logs, isProcessing, turnFlow } = useBattle()
+  const { player, enemy, logs, isProcessing, handleRestart, turnFlow } = useBattle()
   let lastTurn = null
   const logRef = useRef(null)
 
@@ -23,8 +23,15 @@ function App() {
     <Player player={player} />
     <button disabled={isProcessing } onClick={turnFlow}>{isProcessing ? "攻撃中..." : "Attack"}</button>
     {enemy && <Enemy enemy={ enemy } />}
-    {enemy?.hp === 0 && <h2>YOU WIN</h2>}
-    {player.hp === 0 && <h2>GAME OVER</h2>}
+    
+    {player.hp === 0 && (
+      <div style={{ textAlign: "center", marginTop: "20px", position: "fixed", top: 0, left: 0, 
+      width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5", display: "flex",
+      flexDirection: "column", justifyContent: "center", alignItems: "center", zIndex: 100}}>
+        <h2>GAME OVER</h2>
+        <button onClick={handleRestart}>やり直す</button>
+      </div>
+    )}
 
     <div className="log-box" ref={logRef}>
       {logs.map((log, index) => {

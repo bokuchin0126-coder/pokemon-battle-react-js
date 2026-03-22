@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react"
 function Player({ player }) {
-    const hpPercent = (player.hp / player.maxHp) * 100
+    const [displayHp, setDisplayHp] = useState(player.hp)
+    const hpPercent = (displayHp / player.maxHp) * 100
     const hpColor = hpPercent <= 20 ? "red" : hpPercent <= 50 ? "orange" : "green"
+
     const [isHit, setIsHit] = useState(false)
     const [damagePercent, setDamagePercent] = useState(0)
+
     const prevHpRef = useRef(player.hp)
     
     useEffect(() => {
@@ -37,6 +40,14 @@ function Player({ player }) {
       return
     }, [player.hp])
 
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setDisplayHp(player.hp)
+      }, 300)
+
+      return () => clearTimeout(timer)
+    }, [player.hp])
+
     return (
     <>
       <div className={`hp-bar ${isHit ? "hit" : ""}`}>
@@ -46,6 +57,7 @@ function Player({ player }) {
        )}
       </div>
       <h3>Player HP: {player.hp}</h3>
+      <h3>撃破数: {player.defeat}</h3>
     </>
     )
 }

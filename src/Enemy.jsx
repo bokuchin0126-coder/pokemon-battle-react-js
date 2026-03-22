@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 function Enemy({ enemy }) {
   if (!enemy) return null
-  const hpPercent = (enemy.hp / enemy.maxHp) * 100
+   const [displayHp, setDisplayHp] = useState(enemy.hp)
+    const hpPercent = (displayHp / enemy.maxHp) * 100
+
   const hpColor = hpPercent <= 20 ? "red" : hpPercent <= 50 ? "orange" : "green"
   const [isHit, setIsHit] = useState(false)
   const [damagePercent, setDamagePercent] = useState(0)
@@ -40,6 +42,15 @@ function Enemy({ enemy }) {
     return () => clearTimeout(timer)
     }
     return
+  }, [enemy.hp])
+
+  useEffect(() => {
+    if (!enemy) return
+    const timer = setTimeout(() => {
+      setDisplayHp(enemy.hp)
+    }, 300)
+
+    return () => clearTimeout(timer)
   }, [enemy.hp])
 
 

@@ -4,7 +4,8 @@ export function useBattle() {
   const [player, setPlayer] = useState({
     attack: 20,
     hp: 600,
-    maxHp: 600
+    maxHp: 600,
+    defeat: 0
   })
 
   const [enemy, setEnemy] = useState(null)
@@ -90,6 +91,23 @@ export function useBattle() {
     ])
   }
 
+  async function defeatCount(enemyHp) {
+    if (enemyHp <= 0) {
+      setPlayer(prev => ({
+        ...prev,
+        defeat: prev.defeat + 1
+      }))
+
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn} Enemy defeat!]`,
+          type: "player"
+        }
+      ])
+    }
+  }
+
   async function turnFlow() {
     if (!enemy) return
     if (isProcessingRef.current) return
@@ -99,6 +117,7 @@ export function useBattle() {
     
     try {
       const nextEnemyHp = await playerAttack()
+      await defeatCount(nextEnemyHp)
     
       if (nextEnemyHp <= 0) {
         setTurn(prev => prev + 1)
@@ -119,11 +138,24 @@ export function useBattle() {
     }
   }
 
+  function handleRestart() {
+      setPlayer({
+        ...player,
+        attack: 20,
+        hp: 600,
+        maxHp: 600,
+        defeat: 0
+      })
+
+      spawnEnemy()
+  }
+
   return {
     player,
     enemy,
     logs,
     isProcessing,
+    handleRestart,
     turnFlow
   }
 
