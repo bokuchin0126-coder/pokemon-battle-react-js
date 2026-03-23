@@ -73,3 +73,36 @@
 .enemy {
   color: red;
 }
+
+.gameBreak {
+  text-align: center;
+  margin-top: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.gameBreak h2 {
+  font-size: 5rem;
+  font-weight: bold;
+  text-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+}
+
+.clear {
+  color: white;
+}
+
+button {
+  width: 150px;
+  padding: 10px;
+  text-align: center;
+  margin: 10px auto;
+}

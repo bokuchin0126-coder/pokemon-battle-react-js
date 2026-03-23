@@ -19,9 +19,9 @@ export function useBattle() {
 
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-  async function fetchPokemon() {
-    const id = Math.floor(Math.random() * 151) + 1
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+  async function fetchPokemon(id = null) {
+    const pokemonId = id ?? Math.floor(Math.random() * 151) + 1
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
     const data = await res.json()
 
     const hpStat = data.stats.find(s => s.stat.name === "hp")
@@ -122,7 +122,7 @@ export function useBattle() {
       if (nextEnemyHp <= 0) {
         setTurn(prev => prev + 1)
 
-        await wait(300)
+        await wait(500)
         await spawnEnemy()
         isProcessingRef.current = false
         setIsProcessing(false)
