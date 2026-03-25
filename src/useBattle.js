@@ -1,12 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 
 export function useBattle() {
-  const [player, setPlayer] = useState({
-    attack: 20,
-    hp: 600,
-    maxHp: 600,
-    defeat: 0
-  })
+  const [player, setPlayer] = useState(null)
 
   const [enemy, setEnemy] = useState(null)
 
@@ -20,37 +15,131 @@ export function useBattle() {
   const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
   async function fetchPokemon(id = null) {
-    const pokemonId = id ?? Math.floor(Math.random() * 151) + 1
+    const pokemonId = id ?? Math.floor(Math.random() * 60) + 1
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
     const data = await res.json()
 
     const hpStat = data.stats.find(s => s.stat.name === "hp")
     const attackStat = data.stats.find(s => s.stat.name === "attack")
 
-    setEnemy({
+    return {
         name: data.name,
-        attack: Math.floor(attackStat.base_stat / 5),
+        attack: attackStat.base_stat,
         hp: hpStat.base_stat,
         maxHp: hpStat.base_stat,
         image: data.sprites.other["official-artwork"].front_default
+    }
+  }
+
+  async function playerPokemon() {
+    const pokemon = await fetchPokemon(25)
+    setPlayer({
+      name: pokemon.name,
+      attack: Math.floor(pokemon.attack *200),
+      hp: pokemon.hp * 20,
+      maxHp: pokemon.maxHp * 20,
+      defeat: 0,
+      image: pokemon.image
     })
 
     setLogs(prev => [
       ...prev,
       {
-        text: `[ターン${turn}] A wild ${data.name} appeared!`,
+        text: `[ターン${turn}] Come out my Pokemon ${pokemon.name}!`,
         type: "enemy"
       }
     ])
   }
 
+  useEffect(() => {
+    playerPokemon()
+  }, [])
+
   async function spawnEnemy() {
-    fetchPokemon()
+    const pokemon = await fetchPokemon()
+    setEnemy({
+      name: pokemon.name,
+      attack: Math.floor(pokemon.attack / 5),
+      hp: pokemon.hp,
+      maxHp: pokemon.maxHp,
+      image: pokemon.image
+    })
+
+    setLogs(prev => [
+      ...prev,
+      {
+        text: `[ターン${turn}] A wild ${pokemon.name} appeared!`,
+        type: "enemy"
+      }
+    ])
   }
 
   useEffect(() => {
     spawnEnemy()
   }, [])
+
+  async function bossEnemy(newDefeat) {
+
+    if (newDefeat === 9) {
+      const pokemon = await fetchPokemon(146)
+
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 3),
+        hp: pokemon.hp * 1.5,
+        maxHp: pokemon.maxHp * 1.5,
+        image: pokemon.image
+      })
+
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn}] 🔥Boss ${pokemon.name} appears!`,
+          type: "enemy"
+        }
+      ])
+    }
+
+    else if (newDefeat === 19) {
+      const pokemon = await fetchPokemon(384)
+
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 2),
+        hp: pokemon.hp * 2,
+        maxHp: pokemon.maxHp * 2,
+        image: pokemon.image
+      })
+  
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn}] 🔥Boss ${pokemon.name} appears!`,
+          type: "enemy"
+        }
+      ])
+    }
+
+    else if (newDefeat === 29) {
+      const pokemon = await fetchPokemon(150)
+
+      setEnemy({
+        name: pokemon.name,
+        attack: pokemon.attack,
+        hp: pokemon.hp * 3,
+        maxHp: pokemon.maxHp * 3,
+        image: pokemon.image
+      })
+
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn}] 🔥Boss ${pokemon.name} appears!`,
+          type: "enemy"
+        }
+      ])
+    }
+  }
 
   async function playerAttack() {
     const nextEnemyHp = Math.max(0, enemy.hp - player.attack)
@@ -91,11 +180,13 @@ export function useBattle() {
     ])
   }
 
-  async function defeatCount(enemyHp) {
-    if (enemyHp <= 0) {
+  async function defeatCount(nextEnemyHp) {
+    if (nextEnemyHp <= 0) {
+      const newDefeat = player.defeat + 1
+
       setPlayer(prev => ({
-        ...prev,
-        defeat: prev.defeat + 1
+        ...prev, 
+        defeat: newDefeat
       }))
 
       setLogs(prev => [
@@ -105,25 +196,28 @@ export function useBattle() {
           type: "player"
         }
       ])
+      return newDefeat
     }
+    return null
   }
 
   async function turnFlow() {
     if (!enemy) return
     if (isProcessingRef.current) return
-    
+  
     isProcessingRef.current = true
     setIsProcessing(true)
     
     try {
       const nextEnemyHp = await playerAttack()
-      await defeatCount(nextEnemyHp)
-    
-      if (nextEnemyHp <= 0) {
+
+      if (nextEnemyHp <= 0 ) {
+        const newDefeat = await defeatCount(nextEnemyHp)
         setTurn(prev => prev + 1)
 
         await wait(500)
-        await spawnEnemy()
+        if (newDefeat === 9 || newDefeat === 19 || newDefeat === 29) await bossEnemy(newDefeat)
+        else spawnEnemy()
         isProcessingRef.current = false
         setIsProcessing(false)
         return
@@ -139,14 +233,7 @@ export function useBattle() {
   }
 
   function handleRestart() {
-      setPlayer({
-        ...player,
-        attack: 20,
-        hp: 600,
-        maxHp: 600,
-        defeat: 0
-      })
-
+      playerPokemon()
       spawnEnemy()
   }
 

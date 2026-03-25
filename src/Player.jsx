@@ -49,15 +49,20 @@ function Player({ player }) {
     }, [player.hp])
 
     return (
-    <>
-      <div className={`hp-bar ${isHit ? "hit" : ""}`}>
-       <div className="hp-fill" style={{ width: `${hpPercent}%` , backgroundColor: hpColor}} />
-       {damagePercent > 0 && (
+     <>
+    <div className="player">
+    {player.image && (
+      <img src={player.image} alt={player.name} />
+    )}
+    </div>
+    <div className={`hp-bar ${isHit ? "hit" : ""}`}>
+      <div className="hp-fill" style={{ width: `${hpPercent}%` , backgroundColor: hpColor}} />
+      {damagePercent > 0 && (
         <div className="hp-damage" style={{ width: `${damagePercent}%`, left: `${hpPercent}%`}} />
-       )}
-      </div>
-      <h3>Player HP: {player.hp}</h3>
-      <h3>撃破数: {player.defeat}</h3>
+      )}
+    </div>
+    <h3>{player.name} HP: {player.hp}</h3>
+    <h3>撃破数: {player.defeat}</h3>
     </>
     )
 }

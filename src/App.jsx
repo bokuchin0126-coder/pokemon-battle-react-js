@@ -34,7 +34,7 @@ function App() {
           <button disabled={isProcessing } onClick={turnFlow}>{isProcessing ? "攻撃中..." : "Attack"}</button>
           {enemy && <Enemy enemy={ enemy } />}
 
-          {player.defeat === 5 && (
+          {player.defeat === 30 && (
             <div className="gameBreak">
               <h2 className="clear">GAME CLEAR!</h2>
               <button onClick={handleRestart}>もう一度プレイする</button>

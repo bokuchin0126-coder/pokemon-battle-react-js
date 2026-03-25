@@ -17,6 +17,12 @@
   font-weight: bold;
 }
 
+.player img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
 .hp-bar {
   position: relative;
   width: 200px;
