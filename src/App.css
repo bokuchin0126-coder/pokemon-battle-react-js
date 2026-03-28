@@ -80,6 +80,11 @@
   color: red;
 }
 
+.turn {
+  color: black;
+  font-size: 20px;
+}
+
 .gameBreak {
   text-align: center;
   margin-top: 20px;
@@ -111,4 +116,28 @@ button {
   padding: 10px;
   text-align: center;
   margin: 10px auto;
+}
+
+.battleArea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.playerscreen {
+  width: 45%;
+}
+
+.playerscreen img {
+  transform: scaleX(-1);
+}
+
+.enemyscreen {
+  width: 45%;
+}
+
+.vs {
+  font-size: 32px;
+  font-weight: bold;
 }

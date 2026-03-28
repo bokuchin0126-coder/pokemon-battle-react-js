@@ -33,11 +33,13 @@ function Player({ player }) {
 
       const timer = setTimeout(() => {
         setIsHit(false)
-      }, 200)
+      }, 400)
+
+      prevHpRef.current = player.hp
 
       return () => clearTimeout(timer)
       }
-      return
+      prevHpRef.current = player.hp
     }, [player.hp])
 
     useEffect(() => {
@@ -62,7 +64,8 @@ function Player({ player }) {
       )}
     </div>
     <h3>{player.name} HP: {player.hp}</h3>
-    <h3>撃破数: {player.defeat}</h3>
+    <h3>attack: {player.attack}</h3>
+    <h3>defeat: {player.defeat}</h3>
     </>
     )
 }

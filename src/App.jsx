@@ -5,7 +5,7 @@ import Player from "./Player"
 import './App.css'
 
 function App() {
-  const { player, enemy, logs, isProcessing, handleRestart, turnFlow } = useBattle()
+  const { player, enemy, logs, isProcessing, handleRestart, turnFlow, portion, powerBeans } = useBattle()
   const [gameState, setGameState] = useState("start")
   const lastTurnRef = useRef(null)
   const logRef = useRef(null)
@@ -30,9 +30,18 @@ function App() {
       {gameState === "playing" && (
         <>
           <h1>Battle Game</h1>
-          <Player player={player} />
-          <button disabled={isProcessing } onClick={turnFlow}>{isProcessing ? "攻撃中..." : "Attack"}</button>
-          {enemy && <Enemy enemy={ enemy } />}
+          <div className="battleArea">
+            <div className="playerscreen">
+              <Player player={player} />
+              <button disabled={isProcessing } onClick={turnFlow}>{isProcessing ? "攻撃中..." : "Attack"}</button>
+              <button onClick={portion}>{`portion × ${player.item.portion}`}</button>
+              <button onClick={powerBeans}>{`powerBeans × ${player.item.powerBeans}`}</button>
+            </div>
+
+            <div className="vs">VS</div>
+
+            <div className="enemyscreen">{enemy && <Enemy enemy={ enemy } />}</div>
+          </div>
 
           {player.defeat === 30 && (
             <div className="gameBreak">
@@ -57,9 +66,9 @@ function App() {
               lastTurnRef.current = currentTurn
   
               return (
-                <div key={index} className={log.type}>
-                  {showHeader && <h3>---ターン{currentTurn}---</h3>}
-                  <p>{log.text}</p>
+                <div key={index}>
+                  {showHeader && <h3 className="turn">---ターン{currentTurn}---</h3>}
+                  <p className={log.type}>{log.text}</p>
                 </div>
               )
             })}

@@ -35,11 +35,13 @@ export function useBattle() {
     const pokemon = await fetchPokemon(25)
     setPlayer({
       name: pokemon.name,
-      attack: Math.floor(pokemon.attack *200),
+      attack: Math.floor(pokemon.attack / 2),
       hp: pokemon.hp * 20,
       maxHp: pokemon.maxHp * 20,
+      level: 1,
       defeat: 0,
-      image: pokemon.image
+      image: pokemon.image,
+      item: {portion: 0, powerBeans: 0}
     })
 
     setLogs(prev => [
@@ -62,6 +64,7 @@ export function useBattle() {
       attack: Math.floor(pokemon.attack / 5),
       hp: pokemon.hp,
       maxHp: pokemon.maxHp,
+      level: 1,
       image: pokemon.image
     })
 
@@ -88,6 +91,7 @@ export function useBattle() {
         attack: Math.floor(pokemon.attack / 3),
         hp: pokemon.hp * 1.5,
         maxHp: pokemon.maxHp * 1.5,
+        level: 5,
         image: pokemon.image
       })
 
@@ -108,6 +112,7 @@ export function useBattle() {
         attack: Math.floor(pokemon.attack / 2),
         hp: pokemon.hp * 2,
         maxHp: pokemon.maxHp * 2,
+        level: 10,
         image: pokemon.image
       })
   
@@ -128,6 +133,7 @@ export function useBattle() {
         attack: pokemon.attack,
         hp: pokemon.hp * 3,
         maxHp: pokemon.maxHp * 3,
+        level: 20,
         image: pokemon.image
       })
 
@@ -136,6 +142,48 @@ export function useBattle() {
         {
           text: `[ターン${turn}] 🔥Boss ${pokemon.name} appears!`,
           type: "enemy"
+        }
+      ])
+    }
+  }
+
+  function portion() {
+    if (player.item.portion > 0) {
+      setPlayer(prev => ({
+        ...prev,
+        hp: Math.min(prev.maxHp, prev.hp + (300 + (prev.level * 15))),
+        item: {
+          ...prev.item,
+          portion: prev.item.portion - 1
+        }
+      }))
+
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn}] Player used a portion! HP recovered by ${player.hp + (300 + (player.level * 15))}`,
+          type: "player"
+        }
+      ])
+    }
+  }
+
+  function powerBeans() {
+    if (player.item.powerBeans > 0) {
+      setPlayer(prev => ({
+        ...prev,
+        attack: prev.attack + (10 + (prev.level * 3)),
+        item: {
+          ...prev.item,
+          powerBeans: prev.item.powerBeans - 1
+        }
+      }))
+
+      setLogs(prev => [
+        ...prev,
+        {
+          text: `[ターン${turn}] Player used a powerBeans! Attack power increased by ${10 + (player.level * 3)}`,
+          type: "player"
         }
       ])
     }
@@ -180,25 +228,45 @@ export function useBattle() {
     ])
   }
 
+  function calcDefeat(prev) {
+    const newDefeat = prev.defeat + 1
+    let earnedItem = null
+
+    if (newDefeat % 10 === 0) {
+      earnedItem = "portion"
+    } else if (newDefeat % 5 === 0) {
+      earnedItem = "powerBeans"
+    }
+
+    return {newDefeat, earnedItem}
+  }
+
   async function defeatCount(nextEnemyHp) {
     if (nextEnemyHp <= 0) {
-      const newDefeat = player.defeat + 1
+      const { newDefeat, earnedItem } = calcDefeat(player)
 
       setPlayer(prev => ({
-        ...prev, 
-        defeat: newDefeat
+          ...prev,
+          defeat: newDefeat,
+          item: earnedItem
+          ? {
+            ...prev.item,
+            [earnedItem]: prev.item[earnedItem] + 1
+          }
+          :prev.item
       }))
 
-      setLogs(prev => [
-        ...prev,
-        {
-          text: `[ターン${turn} Enemy defeat!]`,
-          type: "player"
-        }
-      ])
+      let newLogs = [{ text: `[ターン${turn}] Defeat the enemy!`, type: "player"}]
+
+      if (earnedItem) {
+        newLogs.push({
+            text: `[ターン${turn}] ${earnedItem} を手に入れた！`,
+            type: "player"
+          })
+      }
+      setLogs(prev => [...prev, ...newLogs])
       return newDefeat
     }
-    return null
   }
 
   async function turnFlow() {
@@ -243,7 +311,9 @@ export function useBattle() {
     logs,
     isProcessing,
     handleRestart,
-    turnFlow
+    turnFlow,
+    portion,
+    powerBeans
   }
 
 }

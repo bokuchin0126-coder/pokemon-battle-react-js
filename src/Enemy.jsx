@@ -37,7 +37,7 @@ function Enemy({ enemy }) {
 
     const timer = setTimeout(() => {
       setIsHit(false)
-    }, 200)
+    }, 400)
 
     return () => clearTimeout(timer)
     }
@@ -68,6 +68,7 @@ function Enemy({ enemy }) {
       )}
     </div>
     <h3>{enemy.name} HP: {enemy.hp}</h3>
+    <h3>attack: {enemy.attack}</h3>
     </>
   )
 }
