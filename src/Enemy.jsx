@@ -9,6 +9,9 @@ function Enemy({ enemy }) {
   const [damagePercent, setDamagePercent] = useState(0)
   const prevHpRef = useRef(enemy.hp)
 
+  const currentHp = enemy.hp
+    const maxHp = enemy.maxHp
+
   useEffect(() => {
     if (!enemy) return
 
@@ -56,19 +59,32 @@ function Enemy({ enemy }) {
 
   return (
     <>
-    <div className="enemy">
-    {enemy.image && (
-      <img src={enemy.image} alt={enemy.name} />
-    )}
+    <div className="enemyscreen">
+      <div className="top">
+        <div className="enemy">
+          <h2>Level: {enemy.level}</h2>
+          {enemy.image && (
+            <img src={enemy.image} alt={enemy.name} />
+          )}
+        </div>
+      </div>
+      <div className="middle">
+        <div className={`hp-bar ${isHit ? "hit" : ""}`}>
+          <div className="hp-fill" style={{ width: `${hpPercent}%` , backgroundColor: hpColor}} />
+          {damagePercent > 0 && (
+            <div className="hp-damage" style={{ width: `${damagePercent}%`, left: `${hpPercent}%`}} />
+          )}
+
+          <span className="hp-text">
+            {currentHp} / {maxHp}
+          </span>
+        </div>
+        <h3>{enemy.name} HP: {enemy.hp}</h3>
+        <h3>attack: {enemy.attack}</h3>
+      </div>
+
+      <div className="bottom"></div>
     </div>
-    <div className={`hp-bar ${isHit ? "hit" : ""}`}>
-      <div className="hp-fill" style={{ width: `${hpPercent}%` , backgroundColor: hpColor}} />
-      {damagePercent > 0 && (
-        <div className="hp-damage" style={{ width: `${damagePercent}%`, left: `${hpPercent}%`}} />
-      )}
-    </div>
-    <h3>{enemy.name} HP: {enemy.hp}</h3>
-    <h3>attack: {enemy.attack}</h3>
     </>
   )
 }

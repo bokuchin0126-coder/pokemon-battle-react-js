@@ -35,7 +35,7 @@ export function useBattle() {
     const pokemon = await fetchPokemon(25)
     setPlayer({
       name: pokemon.name,
-      attack: Math.floor(pokemon.attack / 2),
+      attack: Math.floor(pokemon.attack / 2.5),
       hp: pokemon.hp * 20,
       maxHp: pokemon.maxHp * 20,
       level: 1,
@@ -53,20 +53,49 @@ export function useBattle() {
     ])
   }
 
-  useEffect(() => {
-    playerPokemon()
-  }, [])
-
-  async function spawnEnemy() {
+  async function spawnEnemy(newDefeat) {
     const pokemon = await fetchPokemon()
-    setEnemy({
-      name: pokemon.name,
-      attack: Math.floor(pokemon.attack / 5),
-      hp: pokemon.hp,
-      maxHp: pokemon.maxHp,
-      level: 1,
-      image: pokemon.image
-    })
+
+    if (newDefeat <= 2) {
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 6),
+        hp: pokemon.hp * 2,
+        maxHp: pokemon.hp * 2,
+        level: 1,
+        image: pokemon.image
+      })
+    } 
+    else if (newDefeat >= 20) {
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 2),
+        hp: Math.floor((pokemon.hp * 2) + (newDefeat * 4)),
+        maxHp: Math.floor((pokemon.hp * 2) + (newDefeat * 4)),
+        level: Math.floor(newDefeat / 2),
+        image: pokemon.image
+      })
+    } 
+    else if (newDefeat >= 10) {
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 4),
+        hp: Math.floor((pokemon.hp * 1.5) + (newDefeat * 3)),
+        maxHp: Math.floor((pokemon.hp * 1.5) + (newDefeat * 3)),
+        level: Math.floor(newDefeat / 2),
+        image: pokemon.image
+      })
+    }
+    else {
+      setEnemy({
+        name: pokemon.name,
+        attack: Math.floor(pokemon.attack / 6),
+        hp: pokemon.hp + (newDefeat * 2),
+        maxHp: pokemon.maxHp + (newDefeat * 2),
+        level: Math.floor(newDefeat / 2),
+        image: pokemon.image
+      })
+    }
 
     setLogs(prev => [
       ...prev,
@@ -77,8 +106,13 @@ export function useBattle() {
     ])
   }
 
+  async function initGame() {
+    const pokemon = await playerPokemon()
+    await spawnEnemy(0)
+  }
+
   useEffect(() => {
-    spawnEnemy()
+    initGame()
   }, [])
 
   async function bossEnemy(newDefeat) {
@@ -88,10 +122,10 @@ export function useBattle() {
 
       setEnemy({
         name: pokemon.name,
-        attack: Math.floor(pokemon.attack / 3),
-        hp: pokemon.hp * 1.5,
-        maxHp: pokemon.maxHp * 1.5,
-        level: 5,
+        attack: Math.floor(pokemon.attack / 4),
+        hp: pokemon.hp * 2,
+        maxHp: pokemon.maxHp * 2,
+        level: 7,
         image: pokemon.image
       })
 
@@ -109,10 +143,10 @@ export function useBattle() {
 
       setEnemy({
         name: pokemon.name,
-        attack: Math.floor(pokemon.attack / 2),
-        hp: pokemon.hp * 2,
-        maxHp: pokemon.maxHp * 2,
-        level: 10,
+        attack: Math.floor(pokemon.attack / 3),
+        hp: pokemon.hp * 3,
+        maxHp: pokemon.maxHp * 3,
+        level: 12,
         image: pokemon.image
       })
   
@@ -130,9 +164,9 @@ export function useBattle() {
 
       setEnemy({
         name: pokemon.name,
-        attack: pokemon.attack,
-        hp: pokemon.hp * 3,
-        maxHp: pokemon.maxHp * 3,
+        attack: Math.floor(pokemon.attack / 1.7),
+        hp: pokemon.hp * 4,
+        maxHp: pokemon.maxHp * 4,
         level: 20,
         image: pokemon.image
       })
@@ -151,7 +185,7 @@ export function useBattle() {
     if (player.item.portion > 0) {
       setPlayer(prev => ({
         ...prev,
-        hp: Math.min(prev.maxHp, prev.hp + (300 + (prev.level * 15))),
+        hp: Math.min(prev.maxHp, prev.hp + (450 + (prev.level * 25))),
         item: {
           ...prev.item,
           portion: prev.item.portion - 1
@@ -161,7 +195,7 @@ export function useBattle() {
       setLogs(prev => [
         ...prev,
         {
-          text: `[ターン${turn}] Player used a portion! HP recovered by ${player.hp + (300 + (player.level * 15))}`,
+          text: `[ターン${turn}] Player used a portion! HP recovered by ${player.hp + (450 + (player.level * 25))}`,
           type: "player"
         }
       ])
@@ -172,7 +206,7 @@ export function useBattle() {
     if (player.item.powerBeans > 0) {
       setPlayer(prev => ({
         ...prev,
-        attack: prev.attack + (10 + (prev.level * 3)),
+        attack: prev.attack + (10 + prev.level),
         item: {
           ...prev.item,
           powerBeans: prev.item.powerBeans - 1
@@ -182,7 +216,7 @@ export function useBattle() {
       setLogs(prev => [
         ...prev,
         {
-          text: `[ターン${turn}] Player used a powerBeans! Attack power increased by ${10 + (player.level * 3)}`,
+          text: `[ターン${turn}] Player used a powerBeans! Attack power increased by ${10 + player.level}`,
           type: "player"
         }
       ])
@@ -269,6 +303,36 @@ export function useBattle() {
     }
   }
 
+  async function levelUP(newDefeat) {
+    if (newDefeat % 2 === 0) {
+      if (newDefeat >= 20) {
+        setPlayer(prev => ({
+          ...prev,
+          hp: prev.hp + 45,
+          maxHp: prev.maxHp + 45,
+          level: prev.level + 1
+        }))
+      } 
+      else if (newDefeat >= 10) {
+         setPlayer(prev => ({
+          ...prev,
+          hp: prev.hp + 30,
+          maxHp: prev.maxHp + 30,
+          level: prev.level + 1
+        }))
+      }
+      else {
+         setPlayer(prev => ({
+          ...prev,
+          hp: prev.hp + 15,
+          maxHp: prev.maxHp + 15,
+          level: prev.level + 1
+        }))
+      }
+      setLogs(prev => [...prev, { text: `[ターン${turn}] Player level increased!`, type: "player"}])
+    }
+  }
+
   async function turnFlow() {
     if (!enemy) return
     if (isProcessingRef.current) return
@@ -281,17 +345,18 @@ export function useBattle() {
 
       if (nextEnemyHp <= 0 ) {
         const newDefeat = await defeatCount(nextEnemyHp)
+        await levelUP(newDefeat)
         setTurn(prev => prev + 1)
 
         await wait(500)
         if (newDefeat === 9 || newDefeat === 19 || newDefeat === 29) await bossEnemy(newDefeat)
-        else spawnEnemy()
+        else spawnEnemy(newDefeat)
         isProcessingRef.current = false
         setIsProcessing(false)
         return
       }
   
-      await wait(200)
+      await wait(300)
       await enemyAttack()
 
   } finally {
@@ -300,9 +365,9 @@ export function useBattle() {
     }
   }
 
-  function handleRestart() {
-      playerPokemon()
-      spawnEnemy()
+  async function handleRestart() {
+    const newPlayer = await playerPokemon()
+    await spawnEnemy(0)
   }
 
   return {

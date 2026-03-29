@@ -29,18 +29,23 @@ function App() {
 
       {gameState === "playing" && (
         <>
-          <h1>Battle Game</h1>
+          <h2>Battle Game</h2>
           <div className="battleArea">
             <div className="playerscreen">
-              <Player player={player} />
-              <button disabled={isProcessing } onClick={turnFlow}>{isProcessing ? "攻撃中..." : "Attack"}</button>
-              <button onClick={portion}>{`portion × ${player.item.portion}`}</button>
-              <button onClick={powerBeans}>{`powerBeans × ${player.item.powerBeans}`}</button>
+              <Player
+                player={player}
+                turnFlow={turnFlow}
+                portion={portion}
+                powerBeans={powerBeans}
+                isProcessing={isProcessing}
+              />
             </div>
 
             <div className="vs">VS</div>
 
-            <div className="enemyscreen">{enemy && <Enemy enemy={ enemy } />}</div>
+            <div className="enemyscreen">
+              {enemy && <Enemy enemy={ enemy } />}
+            </div>
           </div>
 
           {player.defeat === 30 && (
