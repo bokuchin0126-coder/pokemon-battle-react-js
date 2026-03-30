@@ -1,16 +1,46 @@
-# React + Vite
+# Pokemon Battle Game
+Reactで作成したターン制バトルゲームです。
+プレイヤーのHPが0になるか、敵を30体撃破するまで戦います。
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## Play Game
+https://github.com/bokuchin0126-coder/react-battle-rebuild/tree/main
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Demo
+![game screen](screenshot.png)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
+-ターン制バトルシステム
+-ランダムポケモン生成(PokeAPI)
+-レベルアップシステム
+-ボス戦(10 / 20 / 30体目で出現)
+-アイテム(回復ポーション / パワービーンズ)
+-HPバー・ダメージアニメーション
+-ターンごとのログ表示
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Tech Stack
+-React
+-JavaScript
+-CSS
+-PokeAPI
+
+---
+
+## What I focused on
+-コンポーネント分割(Player / Enemy)
+-カスタムフック(useBattle)によるロジック分離
+-状態管理によるターン制の実装
+-ログのターン整理とUI改善
+
+---
+
+## Future Improvements
+-ログの視認性向上
+-ゲームバランスの調整
