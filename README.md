@@ -5,7 +5,7 @@ Reactで作成したターン制バトルゲームです。
 ---
 
 ## Play Game
-https://github.com/bokuchin0126-coder/react-battle-rebuild/tree/main
+https://bokuchin0126-coder.github.io/battle-game-rebuild/
 
 ---
 
