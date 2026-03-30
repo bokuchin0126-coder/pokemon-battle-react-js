@@ -123,8 +123,15 @@ body {
 .log-box {
   height: 200px;
   overflow-y: auto;
-  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 16px;
   padding: 10px;
+}
+
+.log-box p {
+  margin: 6px 0;
+  line-height: 1.5;
 }
 
 .player {
@@ -227,16 +234,8 @@ button:disabled {
   gap: 20px;
 }
 
-.playerscreen {
-  width: 45%;
-}
-
 .playerscreen img {
   transform: scaleX(-1);
-}
-
-.enemyscreen {
-  width: 45%;
 }
 
 .vs {

@@ -368,6 +368,8 @@ export function useBattle() {
   async function handleRestart() {
     const newPlayer = await playerPokemon()
     await spawnEnemy(0)
+    setTurn(1)
+    setLogs([])
   }
 
   return {
