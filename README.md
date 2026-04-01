@@ -1,6 +1,5 @@
 # Pokemon Battle Game
-Reactで作成したターン制バトルゲームです。
-プレイヤーのHPが0になるか、敵を30体撃破するまで戦います。
+A turn-based battle game built with React.
 
 ---
 
@@ -15,13 +14,12 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## Features
--ターン制バトルシステム
--ランダムポケモン生成(PokeAPI)
--レベルアップシステム
--ボス戦(10 / 20 / 30体目で出現)
--アイテム(回復ポーション / パワービーンズ)
--HPバー・ダメージアニメーション
--ターンごとのログ表示
+-Turn-based battle system
+-Random Pokemon generation (PokeAPI)
+-Leveling system
+-Boss battle (10 / 20 / 30)
+-Items (Potion / Power Beans)
+-HP bar, damage animation, battle logs
 
 ---
 
@@ -34,13 +32,16 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## What I focused on
--コンポーネント分割(Player / Enemy)
--カスタムフック(useBattle)によるロジック分離
--状態管理によるターン制の実装
--ログのターン整理とUI改善
-
+-Component separation (Player / Ememy)
+-Custom hook (useBattle) for logic separation
+-State-driven turn system
+-Log handling and UI improvements
 ---
 
 ## Future Improvements
 -ログの視認性向上
 -ゲームバランスの調整
+
+## 日本語説明
+Reactで作成したターン制バトルゲームです。
+プレイヤーのHPが0になるか、敵を30体撃破するまで戦います。
