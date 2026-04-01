@@ -24,23 +24,23 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## Tech Stack
--React
--JavaScript
--CSS
--PokeAPI
+- React
+- JavaScript
+- CSS
+- PokeAPI
 
 ---
 
 ## What I focused on
--Component separation (Player / Ememy)
--Custom hook (useBattle) for logic separation
--State-driven turn system
--Log handling and UI improvements
+- Component separation (Player / Ememy)
+- Custom hook (useBattle) for logic separation
+- State-driven turn system
+- Log handling and UI improvements
 ---
 
 ## Future Improvements
--Improve log readability
--Adjust game balance
+- Improve log readability
+- Adjust game balance
 
 ## About
 This project was built to practice React state management and component design.
