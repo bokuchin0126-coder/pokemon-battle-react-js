@@ -39,8 +39,11 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## Future Improvements
--ログの視認性向上
--ゲームバランスの調整
+-Improve log readability
+-Adjust game balance
+
+## About
+This project was built to practice React state management and component design.
 
 ## 日本語説明
 Reactで作成したターン制バトルゲームです。
