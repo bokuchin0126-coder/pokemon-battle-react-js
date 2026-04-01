@@ -14,12 +14,12 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## Features
--Turn-based battle system
--Random Pokemon generation (PokeAPI)
--Leveling system
--Boss battle (10 / 20 / 30)
--Items (Potion / Power Beans)
--HP bar, damage animation, battle logs
+- Turn-based battle system
+- Random Pokemon generation (PokeAPI)
+- Leveling system
+- Boss battle (10 / 20 / 30)
+- Items (Potion / Power Beans)
+- HP bar, damage animation, battle logs
 
 ---
 
