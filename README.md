@@ -10,7 +10,7 @@ https://bokuchin0126-coder.github.io/react-battle-rebuild/
 ---
 
 ## Demo
-![game screen](screenshot.png)
+![game screen](./assets/pikachu.png)
 
 ---
 
