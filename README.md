@@ -4,7 +4,7 @@ A turn-based battle game built with React.
 ---
 
 ## Play Game
-https://bokuchin0126-coder.github.io/react-battle-rebuild/
+https://bokuchin0126-coder.github.io/pokemon-battle-react-js/
 
 ---
 
